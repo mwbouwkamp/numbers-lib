@@ -1,3 +1,5 @@
+package nl.limakajo.numberslib;
+
 public class GameConstants {
 
     //Game contstants
@@ -6,6 +8,5 @@ public class GameConstants {
     public static final long TIMER = 60000;
     public static final int TIMEPENALTY = 120000;
     public static final int NUMTILES = 6;
-
 
 }

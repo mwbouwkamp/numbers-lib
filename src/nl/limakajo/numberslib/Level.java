@@ -1,3 +1,5 @@
+package nl.limakajo.numberslib;
+
 /**
  * Level represents a mutable representation of a level in the gameplay
  * TODO: Make sure levels can be completed without making hugh numbers. Also make sure that player cannot make hugh numbers. In that case display error message in the footer area

@@ -1,2 +1,2 @@
 # numbers-lib
-Numbers game library
+Numbers game numbers.library
