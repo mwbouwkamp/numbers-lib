@@ -9,4 +9,8 @@ public class GameConstants {
     public static final int TIMEPENALTY = 120000;
     public static final int NUMTILES = 6;
 
+    //Table names online database
+    public final static String LEVEL_DATA = "leveldata";
+    public final static String COMPLETED_LEVEL_DATA = "completedleveldata";
+
 }
