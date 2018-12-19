@@ -15,9 +15,9 @@ public class JDBCNetworkUtils {
     private static final String USERNAME = "hclznblm";
     private static final String PASSWORD = "QYXN4qpruR3E1um4QlPwOt2W6ki5jdAM";
 
-    public static LinkedList<Level> getLevelsFromServer(String tableName) {
+    public static LinkedList<Level> getLevelsJSONFromServer() {
         LinkedList<Level> toReturn= new LinkedList<>();
-        String SQL = "SELECT * FROM " + tableName;
+        String SQL = "SELECT * FROM leveldata";
         try {
             Connection connection = getConnection();
             Statement statement = connection.createStatement();
@@ -48,9 +48,9 @@ public class JDBCNetworkUtils {
         return DriverManager.getConnection(URL, USERNAME, PASSWORD);
     }
 
-    public static LinkedList<Level> sendLevelsToServer(String tableName, LinkedList<Level> levels) {
+    public static LinkedList<Level> sendLevelsToServer(LinkedList<Level> levels) {
         LinkedList<Level> succesfullySentLevels = new LinkedList<>();
-        String SQL = "INSERT INTO " + tableName + " (numbers, usertime) VALUES (?, ?)";
+        String SQL = "INSERT INTO completedleveldata (numbers, usertime) VALUES (?, ?)";
         try {
             Connection connection = getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(SQL);
