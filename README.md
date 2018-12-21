@@ -1,2 +1,2 @@
-# numbers-lib
-Numbers game numbers.library
+# nl.limakajo.numberslib.numbersGame-lib
+Numbers game nl.limakajo.numberslib.numbersGame.library
