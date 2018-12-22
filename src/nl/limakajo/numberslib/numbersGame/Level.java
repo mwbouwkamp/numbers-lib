@@ -124,6 +124,14 @@ public class Level {
         return userTime;
     }
 
+    public int getTimesPlayed() {
+        return timesPlayed;
+    }
+
+    public String getNumbers() {
+        return toString();
+    }
+
     public void setUserTime(int userTime) {
         this.userTime = userTime;
     }
