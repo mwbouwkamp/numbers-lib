@@ -130,7 +130,7 @@ public class JDBCNetworkUtils {
             throw new UnsupportedOperationException("Unsupported tableName: " + tableName);
         }
         else {
-            String SQL = "DELETE FROM " + tableName + "WHERE numbers = ?";
+            String SQL = "DELETE FROM " + tableName + " WHERE numbers = ?";
             try {
                 Class.forName("org.postgresql.Driver");
                 Connection connection = getConnection();
