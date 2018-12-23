@@ -87,32 +87,31 @@ public class JDBCNetworkUtils {
      */
     public static JSONObject insertLevels(String tableName, JSONObject levelsJson) {
         JSONObject jsonObjectToReturn = new JSONObject();
-        String SQL = "INSERT INTO " + tableName + "(numbers, usertime) VALUES (?, ?)";
-        switch (tableName) {
-            case NetworkContract.CompletedLevelData.TABLE_NAME:
-                try {
-                    Connection connection  = getConnection();
-                    Iterator<String> keys = levelsJson.keys();
-                    while (keys.hasNext()) {
-                        String key = keys.next();
-                        JSONObject levelJson = (JSONObject) levelsJson.get(key);
-                        PreparedStatement preparedStatement = connection.prepareStatement(SQL);
-                        int affectedrows;
-                        preparedStatement.setString(1, levelJson.getString(DatabaseScheme.KEY_NUMBERS));
-                        preparedStatement.setInt(2, levelJson.getInt(DatabaseScheme.KEY_USER_TIME));
-                        affectedrows = preparedStatement.executeUpdate();
-                        if (affectedrows == 1) {
-                            jsonObjectToReturn.put(key, levelJson);
-                        }
-                        preparedStatement.close();
+        if (!tableName.equals(NetworkContract.CompletedLevelData.TABLE_NAME)) {
+            throw new UnsupportedOperationException("Unsupported tableName: " + tableName);
+        }
+        else {
+            String SQL = "INSERT INTO " + tableName + "(numbers, usertime) VALUES (?, ?)";
+            try {
+                Connection connection = getConnection();
+                Iterator<String> keys = levelsJson.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    JSONObject levelJson = (JSONObject) levelsJson.get(key);
+                    PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+                    int affectedrows;
+                    preparedStatement.setString(1, levelJson.getString(DatabaseScheme.KEY_NUMBERS));
+                    preparedStatement.setInt(2, levelJson.getInt(DatabaseScheme.KEY_USER_TIME));
+                    affectedrows = preparedStatement.executeUpdate();
+                    if (affectedrows == 1) {
+                        jsonObjectToReturn.put(key, levelJson);
                     }
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                    preparedStatement.close();
                 }
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported tableName: " + tableName);
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return jsonObjectToReturn;
     }
