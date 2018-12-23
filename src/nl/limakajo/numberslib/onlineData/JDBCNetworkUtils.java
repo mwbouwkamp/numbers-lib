@@ -93,23 +93,61 @@ public class JDBCNetworkUtils {
         else {
             String SQL = "INSERT INTO " + tableName + "(numbers, usertime) VALUES (?, ?)";
             try {
+                Class.forName("org.postgresql.Driver");
                 Connection connection = getConnection();
                 Iterator<String> keys = levelsJson.keys();
                 while (keys.hasNext()) {
                     String key = keys.next();
                     JSONObject levelJson = (JSONObject) levelsJson.get(key);
                     PreparedStatement preparedStatement = connection.prepareStatement(SQL);
-                    int affectedrows;
                     preparedStatement.setString(1, levelJson.getString(DatabaseScheme.KEY_NUMBERS));
                     preparedStatement.setInt(2, levelJson.getInt(DatabaseScheme.KEY_USER_TIME));
-                    affectedrows = preparedStatement.executeUpdate();
-                    if (affectedrows == 1) {
+                    int affectedRows = preparedStatement.executeUpdate();
+                    if (affectedRows == 1) {
                         jsonObjectToReturn.put(key, levelJson);
                     }
                     preparedStatement.close();
                 }
                 connection.close();
-            } catch (SQLException e) {
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return jsonObjectToReturn;
+    }
+
+    /**
+     * Deletes levels from database based on numbers
+     *
+     * @param tableName     table from which the leves need to be deleted
+     * @param levelsJson    levels to delete
+     * @return              levels that have been deleted succesfully
+     */
+    public static JSONObject deleteLevels(String  tableName, JSONObject levelsJson) {
+        JSONObject jsonObjectToReturn = new JSONObject();
+        //
+        if (!tableName.equals(NetworkContract.CompletedLevelData.TABLE_NAME)) {
+            throw new UnsupportedOperationException("Unsupported tableName: " + tableName);
+        }
+        else {
+            String SQL = "DELETE FROM " + tableName + "WHERE numbers = ?";
+            try {
+                Class.forName("org.postgresql.Driver");
+                Connection connection = getConnection();
+                Iterator<String> keys = levelsJson.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    JSONObject levelJson = (JSONObject) levelsJson.get(key);
+                    PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+                    preparedStatement.setString(1, levelJson.getString(DatabaseScheme.KEY_NUMBERS));
+                    int affectedRows = preparedStatement.executeUpdate();
+                    if (affectedRows == 1) {
+                        jsonObjectToReturn.put(key, levelJson);
+                    }
+                    preparedStatement.close();
+                }
+                connection.close();
+            } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
