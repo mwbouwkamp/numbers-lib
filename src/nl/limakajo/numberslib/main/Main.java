@@ -1,8 +1,7 @@
 package nl.limakajo.numberslib.main;
 
 import nl.limakajo.numberslib.numbersGame.Level;
-import nl.limakajo.numberslib.onlineData.JDBCNetworkUtils;
-import nl.limakajo.numberslib.onlineData.NetworkContract;
+import nl.limakajo.numberslib.utils.NetworkUtils;
 import nl.limakajo.numberslib.utils.DatabaseScheme;
 import nl.limakajo.numberslib.utils.JsonUtils;
 import org.json.JSONObject;
@@ -14,9 +13,9 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("QUERY");
-        JSONObject jsonObjectLevels = JDBCNetworkUtils.queryLevels(NetworkContract.LevelData.TABLE_NAME);
+        JSONObject jsonObjectLevels = NetworkUtils.queryLevels(NetworkUtils.NetworkContract.LevelData.TABLE_NAME);
         System.out.println(jsonObjectLevels);
-        JSONObject jsonObjectCompletedLevels = JDBCNetworkUtils.queryLevels(NetworkContract.CompletedLevelData.TABLE_NAME);
+        JSONObject jsonObjectCompletedLevels = NetworkUtils.queryLevels(NetworkUtils.NetworkContract.CompletedLevelData.TABLE_NAME);
         System.out.println(jsonObjectCompletedLevels);
 
         System.out.println("\nINSERT");
@@ -26,7 +25,7 @@ public class Main {
         LinkedList<Level> levelsToAdd = new LinkedList<>();
         levelsToAdd.add(levelToAdd);
         JSONObject levelsToAddJson = JsonUtils.levelsToJson(levelsToAdd);
-        JSONObject successfullyInsertedLevelsJson = JDBCNetworkUtils.insertLevels(NetworkContract.CompletedLevelData.TABLE_NAME, levelsToAddJson);
+        JSONObject successfullyInsertedLevelsJson = NetworkUtils.insertLevels(NetworkUtils.NetworkContract.CompletedLevelData.TABLE_NAME, levelsToAddJson);
         Iterator<String> keys = successfullyInsertedLevelsJson.keys();
         while (keys.hasNext()) {
             String key = keys.next();
@@ -37,7 +36,7 @@ public class Main {
         }
 
         System.out.println("\nDELETE");
-        JSONObject successfullyDeletedJson = JDBCNetworkUtils.deleteLevels(NetworkContract.CompletedLevelData.TABLE_NAME, levelsToAddJson);
+        JSONObject successfullyDeletedJson = NetworkUtils.deleteLevels(NetworkUtils.NetworkContract.CompletedLevelData.TABLE_NAME, levelsToAddJson);
         keys = successfullyDeletedJson.keys();
         while (keys.hasNext()) {
             String key = keys.next();
