@@ -5,6 +5,7 @@ import nl.limakajo.numberslib.utils.NetworkUtils;
 import nl.limakajo.numberslib.utils.DatabaseScheme;
 import nl.limakajo.numberslib.utils.JsonUtils;
 import org.json.JSONObject;
+import sun.nio.ch.Net;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -15,6 +16,8 @@ public class Main {
         System.out.println("QUERY");
         JSONObject jsonObjectLevels = NetworkUtils.queryLevels(NetworkUtils.NetworkContract.LevelData.TABLE_NAME);
         System.out.println(jsonObjectLevels);
+        JSONObject jsonObjectLevel = NetworkUtils.queryLevel(NetworkUtils.NetworkContract.LevelData.TABLE_NAME, "005007003003004003288");
+        System.out.println(jsonObjectLevel);
         JSONObject jsonObjectCompletedLevels = NetworkUtils.queryLevels(NetworkUtils.NetworkContract.CompletedLevelData.TABLE_NAME);
         System.out.println(jsonObjectCompletedLevels);
 

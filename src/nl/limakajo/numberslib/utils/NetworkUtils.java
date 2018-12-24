@@ -18,58 +18,90 @@ public class NetworkUtils {
      * Calls getLevelsFromServer and returns leveldata from postgresql database
      *
      * @param tableName     table from which the data needs to be retrieved
-     * @return              all levels from database
+     * @return              all levels from table
      */
     public static JSONObject queryLevels(String tableName) {
-        JSONObject jsonObjectToReturn = new JSONObject();
+        JSONObject jsonObjectToReturn;
         if (!tableName.equals(NetworkContract.LevelData.TABLE_NAME) && !tableName.equals(NetworkContract.CompletedLevelData.TABLE_NAME)) {
             throw new UnsupportedOperationException("Unsupported tableName: " + tableName);
         }
         else {
             String SQL = "SELECT * FROM " + tableName;
-            try {
-                Class.forName("org.postgresql.Driver");
-                Connection connection = getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(SQL);
-                while (resultSet.next()) {
-                    switch (tableName) {
-                        case NetworkContract.LevelData.TABLE_NAME:
-                            int key = resultSet.getInt(1);
-                            String numbersString = resultSet.getString(2);
-                            int averageTime = resultSet.getInt(3);
-                            int userTime = GameConstants.TIMEPENALTY;
-                            int timesPlayed = resultSet.getInt(4);
-                            JSONObject levelJson = new JSONObject()
-                                    .put(DatabaseScheme.KEY_NUMBERS, numbersString)
-                                    .put(DatabaseScheme.KEY_AVERAGE_TIME, averageTime)
-                                    .put(DatabaseScheme.KEY_USER_TIME, userTime)
-                                    .put(DatabaseScheme.KEY_TIMES_PLAYED, timesPlayed);
-                            jsonObjectToReturn.put(Integer.toString(key), levelJson);
-                            break;
-                        case NetworkContract.CompletedLevelData.TABLE_NAME:
-                            key = resultSet.getInt(1);
-                            numbersString = resultSet.getString(2);
-                            averageTime = 0;
-                            userTime = resultSet.getInt(3);
-                            timesPlayed = 0;
-                            levelJson = new JSONObject()
-                                    .put(DatabaseScheme.KEY_NUMBERS, numbersString)
-                                    .put(DatabaseScheme.KEY_AVERAGE_TIME, averageTime)
-                                    .put(DatabaseScheme.KEY_USER_TIME, userTime)
-                                    .put(DatabaseScheme.KEY_TIMES_PLAYED, timesPlayed);
-                            jsonObjectToReturn.put(Integer.toString(key), levelJson);
-                            break;
-                        default:
-                            throw new UnsupportedOperationException("Unsupported tableName: " + tableName);
-                    }
+            jsonObjectToReturn = executeQuery(tableName, SQL);
+        }
+        return jsonObjectToReturn;
+    }
+
+    /**
+     * Calls getLevelsFromServer and returns leveldata from postgresql database
+     *
+     * @param tableName     table from which the data needs to be retrieved
+     * @param numbers       the numbers representing the level
+     * @return              the specific level from table
+     */
+    public static JSONObject queryLevel(String tableName, String numbers) {
+        JSONObject jsonObjectToReturn;
+        if (!tableName.equals(NetworkContract.LevelData.TABLE_NAME) && !tableName.equals(NetworkContract.CompletedLevelData.TABLE_NAME)) {
+            throw new UnsupportedOperationException("Unsupported tableName: " + tableName);
+        }
+        else {
+            String SQL = "SELECT * FROM " + tableName + " WHERE numbers = '" + numbers + "'" ;
+            jsonObjectToReturn = executeQuery(tableName, SQL);
+        }
+        return jsonObjectToReturn;
+    }
+
+    /**
+     * Execute query for a given table and query
+     *
+     * @param tableName     table form which the data needs to be retrieved
+     * @param SQL           query to perform
+     * @return              levels from table that match the given query
+     */
+    private static JSONObject executeQuery(String tableName, String SQL) {
+        JSONObject jsonObjectToReturn = new JSONObject();
+        try {
+            Class.forName("org.postgresql.Driver");
+            Connection connection = getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(SQL);
+            while (resultSet.next()) {
+                switch (tableName) {
+                    case NetworkContract.LevelData.TABLE_NAME:
+                        int key = resultSet.getInt(1);
+                        String numbersString = resultSet.getString(2);
+                        int averageTime = resultSet.getInt(3);
+                        int userTime = GameConstants.TIMEPENALTY;
+                        int timesPlayed = resultSet.getInt(4);
+                        JSONObject levelJson = new JSONObject()
+                                .put(DatabaseScheme.KEY_NUMBERS, numbersString)
+                                .put(DatabaseScheme.KEY_AVERAGE_TIME, averageTime)
+                                .put(DatabaseScheme.KEY_USER_TIME, userTime)
+                                .put(DatabaseScheme.KEY_TIMES_PLAYED, timesPlayed);
+                        jsonObjectToReturn.put(Integer.toString(key), levelJson);
+                        break;
+                    case NetworkContract.CompletedLevelData.TABLE_NAME:
+                        key = resultSet.getInt(1);
+                        numbersString = resultSet.getString(2);
+                        averageTime = 0;
+                        userTime = resultSet.getInt(3);
+                        timesPlayed = 0;
+                        levelJson = new JSONObject()
+                                .put(DatabaseScheme.KEY_NUMBERS, numbersString)
+                                .put(DatabaseScheme.KEY_AVERAGE_TIME, averageTime)
+                                .put(DatabaseScheme.KEY_USER_TIME, userTime)
+                                .put(DatabaseScheme.KEY_TIMES_PLAYED, timesPlayed);
+                        jsonObjectToReturn.put(Integer.toString(key), levelJson);
+                        break;
+                    default:
+                        throw new UnsupportedOperationException("Unsupported tableName: " + tableName);
                 }
-                resultSet.close();
-                statement.close();
-                connection.close();
-            } catch (SQLException | ClassNotFoundException e) {
-                e.printStackTrace();
             }
+            resultSet.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return jsonObjectToReturn;
     }
