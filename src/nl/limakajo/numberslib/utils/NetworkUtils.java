@@ -146,6 +146,42 @@ public class NetworkUtils {
     }
 
     /**
+     * Inserts leveldata in postgresql database
+     * For table completedleveldata key, numbers and userTime are inserted
+     *
+     * @param tableName     table into which the levels need to be inserted
+     * @param levelJson     level to insert
+     * @return              level that have been inserted successfully
+     */
+    public static JSONObject insertLevel(String tableName, JSONObject levelJson) {
+        int affectedRows = 0;
+        if (!tableName.equals(NetworkContract.CompletedLevelData.TABLE_NAME)) {
+            throw new UnsupportedOperationException("Unsupported tableName: " + tableName);
+        }
+        else {
+            String SQL = "INSERT INTO " + tableName + "(numbers, usertime) VALUES (?, ?)";
+            try {
+                Class.forName("org.postgresql.Driver");
+                Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+                preparedStatement.setString(1, levelJson.getString(DatabaseScheme.KEY_NUMBERS));
+                preparedStatement.setInt(2, levelJson.getInt(DatabaseScheme.KEY_USER_TIME));
+                affectedRows = preparedStatement.executeUpdate();
+                preparedStatement.close();
+                connection.close();
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        if (affectedRows == 1) {
+            return levelJson;
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
      * Updates averageTime of levels
      *
      * @param tableName     table that needs updating
@@ -158,7 +194,7 @@ public class NetworkUtils {
             throw new UnsupportedOperationException("Unsupported tableName: " + tableName);
         }
         else {
-            String SQL = "UPDATE " + tableName + " SET averageTime = ? WHERE numbers = ? ";
+            String SQL = "UPDATE " + tableName + " SET averageTime = ?, timesplayed = ? WHERE numbers = ? ";
             try {
                 Class.forName("org.postgresql.Driver");
                 Connection connection = getConnection();
@@ -168,7 +204,8 @@ public class NetworkUtils {
                     JSONObject levelJson = (JSONObject) levelsJson.get(key);
                     PreparedStatement preparedStatement = connection.prepareStatement(SQL);
                     preparedStatement.setInt(1, levelJson.getInt(DatabaseScheme.KEY_AVERAGE_TIME));
-                    preparedStatement.setString(2, levelJson.getString(DatabaseScheme.KEY_NUMBERS));
+                    preparedStatement.setInt(2, levelJson.getInt(DatabaseScheme.KEY_TIMES_PLAYED));
+                    preparedStatement.setString(3, levelJson.getString(DatabaseScheme.KEY_NUMBERS));
                     int numRowsAffected = preparedStatement.executeUpdate();
                     if (numRowsAffected == 1) {
                         jsonObjectToReturn.put(key, levelJson);
