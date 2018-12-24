@@ -145,6 +145,13 @@ public class NetworkUtils {
         return jsonObjectToReturn;
     }
 
+    /**
+     * Updates averageTime of levels
+     *
+     * @param tableName     table that needs updating
+     * @param levelsJson    levels to be updated
+     * @return              levels that have been successfully updated
+     */
     public static JSONObject updateLevelAverageTime(String tableName, JSONObject levelsJson) {
         JSONObject jsonObjectToReturn = new JSONObject();
         if (!tableName.equals(NetworkContract.LevelData.TABLE_NAME)) {
