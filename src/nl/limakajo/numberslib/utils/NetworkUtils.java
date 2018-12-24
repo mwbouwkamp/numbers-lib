@@ -151,7 +151,7 @@ public class NetworkUtils {
             throw new UnsupportedOperationException("Unsupported tableName: " + tableName);
         }
         else {
-            String SQL = "UPDATE " + tableName + " SET averageTime = ? WHERE id = ? ";
+            String SQL = "UPDATE " + tableName + " SET averageTime = ? WHERE numbers = ? ";
             try {
                 Class.forName("org.postgresql.Driver");
                 Connection connection = getConnection();
@@ -161,7 +161,7 @@ public class NetworkUtils {
                     JSONObject levelJson = (JSONObject) levelsJson.get(key);
                     PreparedStatement preparedStatement = connection.prepareStatement(SQL);
                     preparedStatement.setInt(1, levelJson.getInt(DatabaseScheme.KEY_AVERAGE_TIME));
-                    preparedStatement.setInt(2, Integer.parseInt(key));
+                    preparedStatement.setString(2, levelJson.getString(DatabaseScheme.KEY_NUMBERS));
                     int numRowsAffected = preparedStatement.executeUpdate();
                     if (numRowsAffected == 1) {
                         jsonObjectToReturn.put(key, levelJson);

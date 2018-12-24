@@ -42,7 +42,7 @@ public class Main {
         System.out.println("\nUPDATE");
         int randomAverageTime = (int) (Math.random() * 120000);
         System.out.println("averageTime: " + randomAverageTime);
-        Level levelToUpdate = new Level.LevelBuilder("001002003004005006007")
+        Level levelToUpdate = new Level.LevelBuilder("005007003003004003288")  //this is the level with id = 1
                 .setAverageTime(randomAverageTime)
                 .build();
         JSONObject levelToUpdateJson = JsonUtils.levelToJson(levelToUpdate);
