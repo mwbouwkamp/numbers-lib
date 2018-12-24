@@ -9,6 +9,7 @@ import sun.nio.ch.Net;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Random;
 
 public class Main {
 
@@ -37,6 +38,17 @@ public class Main {
                 System.out.println("Successfully inserted");
             }
         }
+
+        System.out.println("\nUPDATE");
+        int randomAverageTime = (int) (Math.random() * 120000);
+        System.out.println("averageTime: " + randomAverageTime);
+        Level levelToUpdate = new Level.LevelBuilder("001002003004005006007")
+                .setAverageTime(randomAverageTime)
+                .build();
+        JSONObject levelToUpdateJson = JsonUtils.levelToJson(levelToUpdate);
+        JSONObject levelsToUpdateJson = new JSONObject();
+        levelsToUpdateJson.put("1", levelToUpdateJson);
+        JSONObject successfullyUpdatedLevelsJson = NetworkUtils.updateLevelAverageTime(NetworkUtils.NetworkContract.LevelData.TABLE_NAME, levelsToUpdateJson);
 
         System.out.println("\nDELETE");
         JSONObject successfullyDeletedJson = NetworkUtils.deleteLevels(NetworkUtils.NetworkContract.CompletedLevelData.TABLE_NAME, levelsToAddJson);

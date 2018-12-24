@@ -145,6 +145,40 @@ public class NetworkUtils {
         return jsonObjectToReturn;
     }
 
+    public static JSONObject updateLevelAverageTime(String tableName, JSONObject levelsJson) {
+        JSONObject jsonObjectToReturn = new JSONObject();
+        if (!tableName.equals(NetworkContract.LevelData.TABLE_NAME)) {
+            throw new UnsupportedOperationException("Unsupported tableName: " + tableName);
+        }
+        else {
+            String SQL = "UPDATE " + tableName + " SET averageTime = ? WHERE id = ? ";
+            try {
+                Class.forName("org.postgresql.Driver");
+                Connection connection = getConnection();
+                Iterator<String> keys = levelsJson.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    JSONObject levelJson = (JSONObject) levelsJson.get(key);
+                    PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+                    preparedStatement.setInt(1, levelJson.getInt(DatabaseScheme.KEY_AVERAGE_TIME));
+                    preparedStatement.setInt(2, Integer.parseInt(key));
+                    int numRowsAffected = preparedStatement.executeUpdate();
+                    if (numRowsAffected == 1) {
+                        jsonObjectToReturn.put(key, levelJson);
+                    }
+                    preparedStatement.close();
+                }
+                connection.close();
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+        return jsonObjectToReturn;
+    }
+
     /**
      * Deletes levels from database based on numbers
      *
@@ -154,7 +188,6 @@ public class NetworkUtils {
      */
     public static JSONObject deleteLevels(String  tableName, JSONObject levelsJson) {
         JSONObject jsonObjectToReturn = new JSONObject();
-        //
         if (!tableName.equals(NetworkContract.CompletedLevelData.TABLE_NAME)) {
             throw new UnsupportedOperationException("Unsupported tableName: " + tableName);
         }
