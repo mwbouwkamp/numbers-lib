@@ -26,7 +26,7 @@ public class Main {
         String numbers = "001002003004005006007";
         Level levelToAdd = new Level.LevelBuilder(numbers)
                 .build();
-        LinkedList<Level> levelsToAdd = new LinkedList<>();
+        LinkedList<Level> levelsToAdd = new LinkedList<Level>();
         levelsToAdd.add(levelToAdd);
         JSONObject levelsToAddJson = JsonUtils.levelsToJson(levelsToAdd);
         JSONObject successfullyInsertedLevelsJson = NetworkUtils.insertLevels(NetworkUtils.NetworkContract.CompletedLevelData.TABLE_NAME, levelsToAddJson);

@@ -22,7 +22,7 @@ public class JsonUtils {
     }
 
     public static LinkedList<Level> jsonToLevels(JSONObject levelsJson){
-        LinkedList<Level> toReturn = new LinkedList<>();
+        LinkedList<Level> toReturn = new LinkedList<Level>();
         Iterator<String> keys = levelsJson.keys();
         while (keys.hasNext()) {
             String key = keys.next();
