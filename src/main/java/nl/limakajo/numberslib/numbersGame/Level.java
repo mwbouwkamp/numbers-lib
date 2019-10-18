@@ -144,8 +144,19 @@ public class Level {
         private int timesPlayed;
 
         public LevelBuilder(String numbersString) {
-            this.hand = toArray(numbersString);
-            this.goal = Integer.parseInt(numbersString.substring(GameConstants.NUMTILES * 3, GameConstants.NUMTILES * 3 + 3));
+            if (numbersString.contains(",")) {
+                // Process new level format: 1,2,3,4,5,6,7
+                String[] numbersArray = numbersString.split(",");
+                this.hand = new int[GameConstants.NUMTILES];
+                for (int i = 0; i < GameConstants.NUMTILES; i++) {
+                    this.hand[i] = Integer.parseInt(numbersArray[i]);
+                }
+                this.goal = Integer.parseInt(numbersArray[GameConstants.NUMTILES]);
+            } else {
+                // Process old level format: 001002003004005006007
+                this.hand = toArray(numbersString);
+                this.goal = Integer.parseInt(numbersString.substring(GameConstants.NUMTILES * 3, GameConstants.NUMTILES * 3 + 3));
+            }
         }
 
         public LevelBuilder setAverageTime(int averageTime) {
