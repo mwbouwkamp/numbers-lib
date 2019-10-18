@@ -159,6 +159,11 @@ public class Level {
             }
         }
 
+        public LevelBuilder(int[] hand, int goal) {
+            this.hand = hand;
+            this.goal = goal;
+        }
+
         public LevelBuilder setAverageTime(int averageTime) {
             this.averageTime = averageTime;
             return this;
